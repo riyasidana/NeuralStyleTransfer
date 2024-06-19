@@ -1,26 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Style Transfer with Streamlit</title>
-</head>
-<body>
-    <h1>Neural Style Transfer with Streamlit</h1>
-
-    <h2>Project Description</h2>
+<h1>Neural Style Transfer with Streamlit</h1>
+<h2>Project Description</h2>
     <p>
         This repository showcases an application of Neural Style Transfer using a VGG-19 model pretrained on ImageNet. 
         The app enables users to merge the artistic style of one image with the content of another, creating unique stylized images. 
         Powered by Streamlit, the app provides an easy-to-use web interface for seamless user interaction.
     </p>
-
     <h2>Setup Guide</h2>
     <p>Follow these steps to set up the environment and run the application:</p>
     <ol>
         <li>
             <strong>Clone the Repository</strong>
-            
         </li>
         <li>
             <strong>Install Required Packages:</strong>
@@ -33,7 +22,6 @@
             </code></pre>
         </li>
     </ol>
-
     <h2>How to Use</h2>
     <ol>
         <li>
@@ -58,7 +46,6 @@
             </ul>
         </li>
     </ol>
-
     <h2>Prerequisites</h2>
     <p>Ensure you have the following libraries installed:</p>
     <ul>
@@ -68,5 +55,3 @@
         <li><code>PIL</code>: For image handling.</li>
         <li><code>matplotlib</code>: For image visualization (optional, mainly for development purposes).</li>
     </ul>
-</body>
-</html>
