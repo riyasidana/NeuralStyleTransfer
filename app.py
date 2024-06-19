@@ -110,3 +110,52 @@ def create_model_and_losses(cnn, norm_mean, norm_std, style_img, content_img):
 
     model = model[:i+1]
     return model, style_loss_layers, content_loss_layers
+
+
+def get_optimizer(input_img):
+    optimizer = optim.LBFGS([input_img.requires_grad_(True)])
+    return optimizer
+
+def run_style_transfer(cnn, norm_mean, norm_std, content_img, style_img, input_img, num_steps=300, style_weight=10000, content_weight=0.001):
+    model, style_loss_layers, content_loss_layers = create_model_and_losses(cnn, norm_mean, norm_std, style_img, content_img)
+    optimizer = get_optimizer(input_img)
+
+    run = [0]
+    while run[0] <= num_steps:
+        def closure():
+            input_img.data.clamp_(0, 1)
+            optimizer.zero_grad()
+            model(input_img)
+            style_score = sum([sl.loss for sl in style_loss_layers]) * style_weight
+            content_score = sum([cl.loss for cl in content_loss_layers]) * content_weight
+            loss = style_score + content_score
+            loss.backward()
+            run[0] += 1
+            return style_score + content_score
+
+        optimizer.step(closure)
+
+    input_img.data.clamp_(0, 1)
+    return input_img
+
+# Streamlit app interface
+st.title("Neural Style Transfer Application")
+
+steps = 100
+style_weight = 10000
+content_weight = 0.001
+
+uploaded_style_image = st.file_uploader("Upload Style Image", type=["png", "jpg", "jpeg"])
+uploaded_content_image = st.file_uploader("Upload Content Image", type=["png", "jpg", "jpeg"])
+
+if uploaded_style_image and uploaded_content_image:
+    style_img = load_image(Image.open(uploaded_style_image))
+    content_img = load_image(Image.open(uploaded_content_image))
+    input_img = content_img.clone()
+
+    if st.button("Generate Stylized Image"):
+        with st.spinner('Generating image... Please wait.'):
+            output_img = run_style_transfer(cnn, norm_mean, norm_std, content_img, style_img, input_img, steps, style_weight, content_weight)
+            output_img = output_img.squeeze(0).cpu().detach().permute(1, 2, 0).numpy()
+            st.image(output_img, width=500, caption="Resulting Stylized Image")
+
