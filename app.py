@@ -45,7 +45,6 @@ class StyleLossModule(nn.Module):
         G = compute_gram_matrix(input)
         self.loss = F.mse_loss(G, self.target)
         return input
-    
 
 # Load pre-trained VGG19 model
 cnn = vgg19(pretrained=True).features.to(device).eval()
@@ -53,7 +52,6 @@ cnn = vgg19(pretrained=True).features.to(device).eval()
 # Normalization mean and standard deviation
 norm_mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
 norm_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
-
 
 class NormalizationModule(nn.Module):
     def __init__(self, mean, std):
@@ -63,7 +61,7 @@ class NormalizationModule(nn.Module):
 
     def forward(self, img):
         return (img - self.mean) / self.std
-    
+
 # Specify layers for content and style
 content_layers = ['conv_3']
 style_layers = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
@@ -111,7 +109,6 @@ def create_model_and_losses(cnn, norm_mean, norm_std, style_img, content_img):
     model = model[:i+1]
     return model, style_loss_layers, content_loss_layers
 
-
 def get_optimizer(input_img):
     optimizer = optim.LBFGS([input_img.requires_grad_(True)])
     return optimizer
@@ -158,4 +155,3 @@ if uploaded_style_image and uploaded_content_image:
             output_img = run_style_transfer(cnn, norm_mean, norm_std, content_img, style_img, input_img, steps, style_weight, content_weight)
             output_img = output_img.squeeze(0).cpu().detach().permute(1, 2, 0).numpy()
             st.image(output_img, width=500, caption="Resulting Stylized Image")
-
